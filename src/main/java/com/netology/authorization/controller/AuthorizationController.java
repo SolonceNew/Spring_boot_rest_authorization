@@ -1,30 +1,33 @@
 package com.netology.authorization.controller;
 
 import com.netology.authorization.entity.Authorities;
+import com.netology.authorization.entity.User;
 import com.netology.authorization.exceptions.InvalidCredentials;
 import com.netology.authorization.exceptions.UnauthorizedUser;
 import com.netology.authorization.service.UserService;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import javax.validation.Valid;
 import java.util.List;
 
-
+@Validated
 @RestController
 public class AuthorizationController {
-    @Autowired
-    UserService service;
+    private UserService service;
 
+    public AuthorizationController(UserService service) {
+        this.service = service;
+    }
 
     @GetMapping("/authorize")
-    public List<Authorities> getAutorities(@RequestParam("user") String user,
-                                           @RequestParam("password") String password) {
-        return service.getAuthorities(user, password);
+    public List<Authorities> getAutorities(@Valid User user) {
+        return service.getAuthorities(user);
     }
 
 

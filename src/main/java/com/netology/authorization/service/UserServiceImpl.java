@@ -2,10 +2,10 @@ package com.netology.authorization.service;
 
 
 import com.netology.authorization.entity.Authorities;
+import com.netology.authorization.entity.User;
 import com.netology.authorization.exceptions.InvalidCredentials;
 import com.netology.authorization.exceptions.UnauthorizedUser;
 import com.netology.authorization.repository.UserRepository;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -13,17 +13,22 @@ import java.util.List;
 
 @Service
 public class UserServiceImpl implements UserService {
-    @Autowired
-    UserRepository userRepository;
+
+    private UserRepository userRepository;
+
+    public UserServiceImpl(UserRepository userRepository) {
+        this.userRepository = userRepository;
+    }
 
     @Override
-    public List<Authorities> getAuthorities(String userName, String password) {
-        if (isEmpty(userName) || isEmpty(password)) {
+    public List<Authorities> getAuthorities(User user) {
+        if (isEmpty(user.getName()) || isEmpty(user.getPassword())) {
             throw new InvalidCredentials("user or password is empty");
         }
-        List<Authorities> userAuthorities = userRepository.getUserAuthorities(userName, password);
+        List<Authorities> userAuthorities = userRepository.getUserAuthorities(user.getName(),
+                user.getPassword());
         if (isEmpty(userAuthorities)) {
-            throw new UnauthorizedUser("unknown user" + userName);
+            throw new UnauthorizedUser("unknown user " + user.getName());
         }
         return userAuthorities;
     }
