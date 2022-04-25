@@ -1,0 +1,12 @@
+version: "2.4.1"
+services:
+  app:
+    build:
+      ./
+    image:
+      anna/authorization-app:latest
+   
+    ports:
+      - 9091:9091
+
+
